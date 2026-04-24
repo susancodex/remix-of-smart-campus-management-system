@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, CheckSquare, TrendingUp, Inbox } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -76,11 +76,12 @@ export default function Attendance() {
       <PageHeader
         title="Attendance"
         description={isAdmin ? "Mark and review student attendance." : "Your attendance overview."}
+        icon={<CheckSquare className="h-6 w-6" />}
         actions={
           isAdmin && (
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button className="gap-2"><Plus className="h-4 w-4" /> Mark attendance</Button>
+                <Button className="gap-2 shadow-glow"><Plus className="h-4 w-4" /> Mark attendance</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader><DialogTitle>Mark attendance</DialogTitle></DialogHeader>
@@ -118,32 +119,41 @@ export default function Attendance() {
 
       {!isAdmin && (
         <>
-          <Card className="mb-6 border-border/60 shadow-card">
-            <CardContent className="p-6">
+          <Card className="relative mb-6 overflow-hidden border-border/60 shadow-card">
+            <div className="absolute inset-0 bg-gradient-mesh opacity-60" />
+            <CardContent className="relative p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Overall attendance</p>
-                  <p className="mt-1 text-4xl font-bold tracking-tight">{overall}%</p>
+                  <p className="text-sm font-medium text-muted-foreground">Overall attendance</p>
+                  <p className="mt-2 font-display text-5xl font-bold tracking-tight text-gradient">{overall}%</p>
                 </div>
-                <div className="text-right text-sm text-muted-foreground">
-                  {myRecords.filter((r) => r.status === "present").length} / {myRecords.length} classes
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-vivid text-primary-foreground shadow-glow">
+                  <TrendingUp className="h-6 w-6" />
                 </div>
               </div>
-              <Progress value={overall} className="mt-4" />
+              <Progress value={overall} className="mt-5 h-2" />
+              <p className="mt-3 text-xs text-muted-foreground">
+                {myRecords.filter((r) => r.status === "present").length} present out of {myRecords.length} classes
+              </p>
             </CardContent>
           </Card>
 
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Subject-wise</h2>
+          <h2 className="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-muted-foreground">Subject-wise breakdown</h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {subjectStats.length === 0 && <p className="text-sm text-muted-foreground">No attendance recorded yet.</p>}
+            {subjectStats.length === 0 && (
+              <div className="col-span-full rounded-2xl border border-dashed border-border/60 py-16 text-center">
+                <Inbox className="mx-auto h-12 w-12 text-muted-foreground/40" />
+                <p className="mt-3 text-sm text-muted-foreground">No attendance recorded yet.</p>
+              </div>
+            )}
             {subjectStats.map((s) => (
-              <Card key={s.subject} className="border-border/60 shadow-card">
+              <Card key={s.subject} className="border-border/60 shadow-card transition-all hover:shadow-glow">
                 <CardContent className="p-5">
                   <div className="flex items-center justify-between">
                     <p className="font-medium">{s.subject}</p>
-                    <span className={`text-sm font-semibold ${s.pct >= 75 ? "text-success" : "text-destructive"}`}>{s.pct}%</span>
+                    <span className={`font-display text-base font-bold ${s.pct >= 75 ? "text-success" : "text-destructive"}`}>{s.pct}%</span>
                   </div>
-                  <Progress value={s.pct} className="mt-3" />
+                  <Progress value={s.pct} className="mt-3 h-2" />
                   <p className="mt-2 text-xs text-muted-foreground">{s.present} present of {s.total}</p>
                 </CardContent>
               </Card>

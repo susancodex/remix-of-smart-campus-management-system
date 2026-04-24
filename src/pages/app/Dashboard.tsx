@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Calendar, ClipboardList, Megaphone, Percent, FileText, ArrowUpRight } from "lucide-react";
+import { Calendar, ClipboardList, Megaphone, Percent, FileText, ArrowUpRight, LayoutDashboard, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -50,10 +50,10 @@ export default function Dashboard() {
   }, [user, role]);
 
   const cards = [
-    { label: "Assignments", value: stats?.assignments, icon: ClipboardList, color: "text-primary" },
-    { label: role === "admin" ? "Total Tasks" : "Pending Tasks", value: stats?.pending, icon: FileText, color: "text-warning" },
-    { label: "Notices", value: stats?.notices, icon: Megaphone, color: "text-accent-foreground" },
-    { label: "Attendance %", value: stats ? `${stats.attendance}%` : undefined, icon: Percent, color: "text-success" },
+    { label: "Assignments", value: stats?.assignments, icon: ClipboardList, gradient: "from-primary/20 to-primary/5", iconColor: "text-primary" },
+    { label: role === "admin" ? "Total Tasks" : "Pending Tasks", value: stats?.pending, icon: FileText, gradient: "from-warning/20 to-warning/5", iconColor: "text-warning" },
+    { label: "Notices", value: stats?.notices, icon: Megaphone, gradient: "from-primary-glow/20 to-primary-glow/5", iconColor: "text-primary-glow" },
+    { label: "Attendance %", value: stats ? `${stats.attendance}%` : undefined, icon: Percent, gradient: "from-success/20 to-success/5", iconColor: "text-success" },
   ];
 
   return (
@@ -61,17 +61,21 @@ export default function Dashboard() {
       <PageHeader
         title={`Hello, ${fullName?.split(" ")[0] || "there"} 👋`}
         description="Here's a quick overview of your campus activity."
+        icon={<LayoutDashboard className="h-6 w-6" />}
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
-          <Card key={c.label} className="overflow-hidden border-border/60 shadow-card transition-all hover:shadow-elegant">
-            <CardContent className="p-5">
+          <Card key={c.label} className="group relative overflow-hidden border-border/60 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-glow">
+            <div className={`absolute inset-0 bg-gradient-to-br ${c.gradient} opacity-50`} />
+            <CardContent className="relative p-5">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-muted-foreground">{c.label}</p>
-                <c.icon className={`h-4 w-4 ${c.color}`} />
+                <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-background/80 ${c.iconColor} shadow-sm`}>
+                  <c.icon className="h-4 w-4" />
+                </div>
               </div>
-              <div className="mt-2 text-3xl font-bold tracking-tight">
+              <div className="mt-3 font-display text-3xl font-bold tracking-tight">
                 {c.value === undefined ? <Skeleton className="h-8 w-16" /> : c.value}
               </div>
             </CardContent>
@@ -82,17 +86,22 @@ export default function Dashboard() {
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card className="border-border/60 shadow-card">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">Latest notices</CardTitle>
+            <div className="flex items-center gap-2">
+              <Megaphone className="h-4 w-4 text-primary" />
+              <CardTitle className="text-base">Latest notices</CardTitle>
+            </div>
             <Link to="/app/notices" className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
               View all <ArrowUpRight className="h-3 w-3" />
             </Link>
           </CardHeader>
           <CardContent className="space-y-3">
             {recentNotices.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No notices yet.</p>
+              <div className="rounded-lg border border-dashed border-border/60 py-8 text-center text-sm text-muted-foreground">
+                No notices yet.
+              </div>
             ) : (
               recentNotices.map((n) => (
-                <div key={n.id} className="rounded-lg border bg-card p-3">
+                <div key={n.id} className="rounded-lg border border-border/60 bg-card p-3 transition-colors hover:border-primary/40 hover:bg-accent/30">
                   <div className="flex items-center justify-between gap-2">
                     <p className="truncate text-sm font-medium">{n.title}</p>
                     {n.important && <Badge variant="destructive">Important</Badge>}
@@ -106,22 +115,27 @@ export default function Dashboard() {
 
         <Card className="border-border/60 shadow-card">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">Upcoming assignments</CardTitle>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-primary" />
+              <CardTitle className="text-base">Upcoming assignments</CardTitle>
+            </div>
             <Link to="/app/assignments" className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
               View all <ArrowUpRight className="h-3 w-3" />
             </Link>
           </CardHeader>
           <CardContent className="space-y-3">
             {upcoming.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Nothing due soon.</p>
+              <div className="rounded-lg border border-dashed border-border/60 py-8 text-center text-sm text-muted-foreground">
+                Nothing due soon.
+              </div>
             ) : (
               upcoming.map((a) => (
-                <div key={a.id} className="flex items-center justify-between rounded-lg border bg-card p-3">
+                <div key={a.id} className="flex items-center justify-between rounded-lg border border-border/60 bg-card p-3 transition-colors hover:border-primary/40 hover:bg-accent/30">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium">{a.title}</p>
                     <p className="text-xs text-muted-foreground">{a.subject}</p>
                   </div>
-                  <Badge variant="outline" className="shrink-0 gap-1">
+                  <Badge variant="outline" className="shrink-0 gap-1 border-primary/40 text-primary">
                     <Calendar className="h-3 w-3" />
                     {format(new Date(a.due_date), "MMM d")}
                   </Badge>

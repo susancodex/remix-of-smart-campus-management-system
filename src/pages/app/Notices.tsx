@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Search, AlertTriangle } from "lucide-react";
+import { Plus, Trash2, Search, AlertTriangle, Megaphone, Inbox } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -61,11 +61,12 @@ export default function Notices() {
       <PageHeader
         title="Notice Board"
         description="Latest announcements from your campus."
+        icon={<Megaphone className="h-6 w-6" />}
         actions={
           isAdmin && (
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button className="gap-2"><Plus className="h-4 w-4" /> New notice</Button>
+                <Button className="gap-2 shadow-glow"><Plus className="h-4 w-4" /> New notice</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader><DialogTitle>Post a notice</DialogTitle></DialogHeader>
@@ -86,21 +87,25 @@ export default function Notices() {
 
       <div className="relative mb-4 max-w-md">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input className="pl-9" placeholder="Search notices..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+        <Input className="h-11 pl-9" placeholder="Search notices..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {pageItems.length === 0 && (
-          <p className="text-sm text-muted-foreground">No notices found.</p>
+          <div className="col-span-full rounded-2xl border border-dashed border-border/60 py-16 text-center">
+            <Inbox className="mx-auto h-12 w-12 text-muted-foreground/40" />
+            <p className="mt-3 text-sm text-muted-foreground">No notices found.</p>
+          </div>
         )}
         {pageItems.map((n) => (
-          <Card key={n.id} className={`border-border/60 shadow-card ${n.important ? "ring-1 ring-destructive/40" : ""}`}>
+          <Card key={n.id} className={`group relative overflow-hidden border-border/60 shadow-card transition-all hover:shadow-glow ${n.important ? "ring-1 ring-destructive/40" : ""}`}>
+            {n.important && <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-destructive via-warning to-destructive" />}
             <CardContent className="p-5">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     {n.important && <AlertTriangle className="h-4 w-4 text-destructive" />}
-                    <h3 className="truncate font-semibold">{n.title}</h3>
+                    <h3 className="truncate font-display text-lg font-semibold">{n.title}</h3>
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {format(new Date(n.created_at), "MMM d, yyyy • h:mm a")}
