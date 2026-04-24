@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { z } from "zod";
-import { GraduationCap, ArrowLeft, Sparkles } from "lucide-react";
+import { GraduationCap, ArrowLeft, Sparkles, MailCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ export default function Auth() {
   const initialTab = params.get("mode") === "signup" ? "signup" : "signin";
   const [tab, setTab] = useState(initialTab);
   const [submitting, setSubmitting] = useState(false);
+  const [signupSentTo, setSignupSentTo] = useState<string | null>(null);
 
   const [signinEmail, setSigninEmail] = useState("");
   const [signinPassword, setSigninPassword] = useState("");
@@ -63,13 +64,17 @@ export default function Auth() {
       email: parsed.data.email,
       password: parsed.data.password,
       options: {
-        emailRedirectTo: `${window.location.origin}/app`,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
         data: { full_name: parsed.data.fullName },
       },
     });
     setSubmitting(false);
-    if (error) toast.error(error.message);
-    else toast.success("Account created! You can sign in now.");
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setSignupSentTo(parsed.data.email);
+    toast.success("Account created. Check your inbox to verify.");
   };
 
   return (
@@ -112,7 +117,15 @@ export default function Auth() {
                     <Input id="si-email" type="email" placeholder="you@example.com" value={signinEmail} onChange={(e) => setSigninEmail(e.target.value)} required className="h-11" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="si-password">Password</Label>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="si-password">Password</Label>
+                      <Link
+                        to="/forgot-password"
+                        className="text-xs font-medium text-primary hover:underline"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
                     <Input id="si-password" type="password" placeholder="••••••••" value={signinPassword} onChange={(e) => setSigninPassword(e.target.value)} required className="h-11" />
                   </div>
                   <Button type="submit" disabled={submitting} className="h-11 w-full shadow-glow">
@@ -121,6 +134,37 @@ export default function Auth() {
                 </form>
               </TabsContent>
               <TabsContent value="signup">
+                {signupSentTo ? (
+                  <div className="mt-6 space-y-4 rounded-2xl border bg-card p-6 text-center shadow-elegant">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <MailCheck className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <p className="font-semibold">Verify your email</p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        We've sent a confirmation link to{" "}
+                        <span className="font-medium text-foreground">{signupSentTo}</span>. Click it to activate your account, then sign in.
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Button onClick={() => setTab("signin")} className="h-11 w-full shadow-glow">
+                        Go to sign in
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="h-11 w-full"
+                        onClick={() => {
+                          setSignupSentTo(null);
+                          setSignupEmail("");
+                          setSignupPassword("");
+                          setSignupName("");
+                        }}
+                      >
+                        Use a different email
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
                 <form onSubmit={handleSignUp} className="space-y-4 pt-6">
                   <div className="space-y-2">
                     <Label htmlFor="su-name">Full name</Label>
@@ -141,6 +185,7 @@ export default function Auth() {
                     The first registered account becomes Admin. All others are Students.
                   </p>
                 </form>
+                )}
               </TabsContent>
             </Tabs>
           </div>
