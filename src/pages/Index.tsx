@@ -73,7 +73,7 @@ const Index = () => {
             <Sparkles className="h-3.5 w-3.5 text-primary" />
             Modern campus management, reimagined
           </div>
-          <h1 className="font-display text-5xl font-extrabold leading-[1.05] tracking-tight sm:text-7xl">
+          <h1 className="font-display text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl">
             Run your entire campus
             <span className="mt-2 block text-gradient">in one beautiful place.</span>
           </h1>
@@ -176,7 +176,7 @@ const Index = () => {
         <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-gradient-vivid p-10 text-center shadow-elegant sm:p-16">
           <div className="absolute inset-0 bg-grid opacity-20" />
           <div className="relative">
-            <h2 className="font-display text-3xl font-bold text-primary-foreground sm:text-5xl">
+            <h2 className="font-display text-2xl font-bold text-primary-foreground sm:text-4xl lg:text-5xl">
               Ready to modernize your campus?
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-primary-foreground/90">

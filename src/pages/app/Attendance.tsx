@@ -95,7 +95,7 @@ export default function Attendance() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div className="space-y-1.5"><Label>Subject</Label><Input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} required maxLength={100} /></div>
                     <div className="space-y-1.5"><Label>Date</Label><Input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required /></div>
                   </div>
@@ -170,12 +170,13 @@ export default function Attendance() {
           </div>
           <Card className="border-border/60 shadow-card">
             <CardContent className="p-0">
+              <div className="w-full overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Student</TableHead>
                     <TableHead>Subject</TableHead>
-                    <TableHead>Date</TableHead>
+                    <TableHead className="hidden sm:table-cell">Date</TableHead>
                     <TableHead>Status</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -187,9 +188,9 @@ export default function Attendance() {
                     const s = studentMap[r.student_id];
                     return (
                       <TableRow key={r.id}>
-                        <TableCell>{s?.full_name || s?.email || "—"}</TableCell>
-                        <TableCell>{r.subject}</TableCell>
-                        <TableCell>{format(new Date(r.date), "MMM d, yyyy")}</TableCell>
+                        <TableCell className="max-w-[160px] truncate">{s?.full_name || s?.email || "—"}</TableCell>
+                        <TableCell className="max-w-[140px] truncate">{r.subject}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{format(new Date(r.date), "MMM d, yyyy")}</TableCell>
                         <TableCell>
                           <Badge className={r.status === "present" ? "bg-success text-success-foreground hover:bg-success" : ""} variant={r.status === "absent" ? "destructive" : "default"}>
                             {r.status}
@@ -200,6 +201,7 @@ export default function Attendance() {
                   })}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         </>
