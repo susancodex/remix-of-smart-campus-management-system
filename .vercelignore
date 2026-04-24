@@ -1,0 +1,24 @@
+# Build artifacts
+dist
+build
+
+# Dependencies
+node_modules
+
+# Local env / OS files
+.env
+.env.local
+.env.*.local
+.DS_Store
+
+# Logs & caches
+*.log
+.vite
+coverage
+
+# Tests
+src/test
+vitest.config.ts
+
+# Supabase migrations & dev config (server-managed)
+supabase
