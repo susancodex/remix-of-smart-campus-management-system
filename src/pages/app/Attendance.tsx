@@ -16,12 +16,12 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
 interface Profile { id: string; full_name: string; email: string }
-interface Record { id: string; student_id: string; subject: string; status: "present" | "absent"; date: string }
+interface AttendanceRecord { id: string; student_id: string; subject: string; status: "present" | "absent"; date: string }
 
 export default function Attendance() {
   const { role, user } = useAuth();
   const isAdmin = role === "admin";
-  const [records, setRecords] = useState<Record[]>([]);
+  const [records, setRecords] = useState<AttendanceRecord[]>([]);
   const [students, setStudents] = useState<Profile[]>([]);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ student_id: "", subject: "", status: "present" as "present" | "absent", date: new Date().toISOString().slice(0, 10) });
@@ -30,7 +30,7 @@ export default function Attendance() {
   const load = async () => {
     const q = supabase.from("attendance").select("*").order("date", { ascending: false });
     const { data } = await q;
-    setRecords((data ?? []) as Record[]);
+    setRecords((data ?? []) as AttendanceRecord[]);
     if (isAdmin) {
       const { data: ps } = await supabase.from("profiles").select("id, full_name, email");
       setStudents(ps ?? []);
@@ -39,7 +39,7 @@ export default function Attendance() {
   useEffect(() => { load(); }, [isAdmin]);
 
   const studentMap = useMemo(() => {
-    const m: Record<string, Profile> = {} as any;
+    const m: Record<string, Profile> = {};
     students.forEach((s) => { m[s.id] = s; });
     return m;
   }, [students]);
