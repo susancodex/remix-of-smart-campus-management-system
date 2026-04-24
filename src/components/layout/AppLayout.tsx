@@ -1,6 +1,7 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
+import { MobileBottomNav } from "./MobileBottomNav";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -25,12 +26,19 @@ export default function AppLayout() {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-background">
-        <AppSidebar />
+        {/* Sidebar is hidden on phones — they get the bottom nav instead. */}
+        <div className="hidden md:contents">
+          <AppSidebar />
+        </div>
         <div className="flex flex-1 flex-col">
           <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border/60 bg-background/80 px-4 backdrop-blur-xl sm:px-6">
             <div className="flex items-center gap-3">
-              <SidebarTrigger className="text-muted-foreground" />
+              <SidebarTrigger className="hidden text-muted-foreground md:inline-flex" />
               <div className="hidden sm:block">
+                <p className="text-xs text-muted-foreground">Welcome back</p>
+                <p className="text-sm font-semibold leading-none">{fullName?.split(" ")[0] || "Friend"}</p>
+              </div>
+              <div className="md:hidden">
                 <p className="text-xs text-muted-foreground">Welcome back</p>
                 <p className="text-sm font-semibold leading-none">{fullName?.split(" ")[0] || "Friend"}</p>
               </div>
@@ -46,13 +54,14 @@ export default function AppLayout() {
               </Badge>
             </div>
           </header>
-          <main className="relative flex-1 animate-fade-in p-4 sm:p-6 lg:p-8">
+          <main className="relative flex-1 animate-fade-in p-4 pb-24 sm:p-6 md:pb-6 lg:p-8">
             <div className="pointer-events-none absolute inset-0 bg-gradient-mesh opacity-40" />
             <div className="relative">
               <Outlet />
             </div>
           </main>
         </div>
+        <MobileBottomNav />
       </div>
     </SidebarProvider>
   );
