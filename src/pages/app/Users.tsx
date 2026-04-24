@@ -139,13 +139,14 @@ export default function Users() {
 
       <Card className="border-border/60 shadow-card">
         <CardContent className="p-0">
+          <div className="w-full overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>User</TableHead>
-                <TableHead>Email</TableHead>
+                <TableHead className="hidden sm:table-cell">Email</TableHead>
                 <TableHead>Role</TableHead>
-                <TableHead>Joined</TableHead>
+                <TableHead className="hidden md:table-cell">Joined</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -187,10 +188,13 @@ export default function Users() {
                                 <span className="ml-2 text-xs text-muted-foreground">(you)</span>
                               )}
                             </p>
+                            <p className="truncate text-xs text-muted-foreground sm:hidden">
+                              {row.email}
+                            </p>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">{row.email}</TableCell>
+                      <TableCell className="hidden text-sm text-muted-foreground sm:table-cell">{row.email}</TableCell>
                       <TableCell>
                         <Badge
                           variant={isAdminRow ? "default" : "secondary"}
@@ -200,7 +204,7 @@ export default function Users() {
                           <span className="capitalize">{row.role}</span>
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="hidden text-sm text-muted-foreground md:table-cell">
                         {format(new Date(row.created_at), "MMM d, yyyy")}
                       </TableCell>
                       <TableCell className="text-right">
@@ -220,7 +224,7 @@ export default function Users() {
                                       : ""
                                 }
                               >
-                                <ShieldOff className="h-4 w-4" /> Demote
+                                <ShieldOff className="h-4 w-4" /> <span className="hidden sm:inline">Demote</span>
                               </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
@@ -242,7 +246,7 @@ export default function Users() {
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button size="sm" className="gap-1" disabled={busyId === row.id}>
-                                <Shield className="h-4 w-4" /> Promote
+                                <Shield className="h-4 w-4" /> <span className="hidden sm:inline">Promote</span>
                               </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
@@ -268,6 +272,7 @@ export default function Users() {
                 })}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
 

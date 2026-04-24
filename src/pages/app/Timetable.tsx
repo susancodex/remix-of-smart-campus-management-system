@@ -69,12 +69,12 @@ export default function Timetable() {
               <DialogContent>
                 <DialogHeader><DialogTitle>Add class</DialogTitle></DialogHeader>
                 <form onSubmit={add} className="space-y-3">
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div className="space-y-1.5"><Label>Subject</Label><Input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} required /></div>
                     <div className="space-y-1.5"><Label>Teacher</Label><Input value={form.teacher} onChange={(e) => setForm({ ...form, teacher: e.target.value })} required /></div>
                   </div>
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="space-y-1.5">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    <div className="col-span-2 space-y-1.5 sm:col-span-1">
                       <Label>Day</Label>
                       <Select value={form.day} onValueChange={(v) => setForm({ ...form, day: v })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
