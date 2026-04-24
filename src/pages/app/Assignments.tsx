@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Search, Calendar as CalendarIcon, CheckCircle2, Clock } from "lucide-react";
+import { Plus, Trash2, Search, Calendar as CalendarIcon, CheckCircle2, Clock, ClipboardList, Inbox } from "lucide-react";
 import { format, isBefore, startOfToday } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -78,11 +78,12 @@ export default function Assignments() {
       <PageHeader
         title="Assignments"
         description={isAdmin ? "Create and manage assignments." : "Track and submit your work."}
+        icon={<ClipboardList className="h-6 w-6" />}
         actions={
           isAdmin && (
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button className="gap-2"><Plus className="h-4 w-4" /> New assignment</Button>
+                <Button className="gap-2 shadow-glow"><Plus className="h-4 w-4" /> New assignment</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader><DialogTitle>New assignment</DialogTitle></DialogHeader>
@@ -104,10 +105,10 @@ export default function Assignments() {
       <div className="mb-4 flex flex-col gap-2 sm:flex-row">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input className="pl-9" placeholder="Search assignments..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          <Input className="h-11 pl-9" placeholder="Search assignments..." value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
         {!isAdmin && (
-          <div className="flex gap-1 rounded-lg border bg-card p-1">
+          <div className="flex gap-1 rounded-lg border border-border/60 bg-card p-1">
             {(["all", "pending", "submitted"] as const).map((f) => (
               <Button key={f} size="sm" variant={filter === f ? "default" : "ghost"} className="capitalize" onClick={() => setFilter(f)}>{f}</Button>
             ))}
@@ -116,16 +117,22 @@ export default function Assignments() {
       </div>
 
       <div className="space-y-3">
-        {filtered.length === 0 && <p className="text-sm text-muted-foreground">No assignments.</p>}
+        {filtered.length === 0 && (
+          <div className="rounded-2xl border border-dashed border-border/60 py-16 text-center">
+            <Inbox className="mx-auto h-12 w-12 text-muted-foreground/40" />
+            <p className="mt-3 text-sm text-muted-foreground">No assignments.</p>
+          </div>
+        )}
         {filtered.map((a) => {
           const status = statuses[a.id] ?? "pending";
           const overdue = isBefore(new Date(a.due_date), startOfToday()) && status !== "submitted";
           return (
-            <Card key={a.id} className="border-border/60 shadow-card">
+            <Card key={a.id} className={`group relative overflow-hidden border-border/60 shadow-card transition-all hover:shadow-glow ${overdue ? "ring-1 ring-destructive/40" : ""}`}>
+              <div className={`absolute inset-y-0 left-0 w-1 ${overdue ? "bg-destructive" : status === "submitted" ? "bg-success" : "bg-gradient-vivid"}`} />
               <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-semibold">{a.title}</h3>
+                    <h3 className="font-display text-lg font-semibold">{a.title}</h3>
                     <Badge variant="secondary">{a.subject}</Badge>
                     {!isAdmin && (
                       <Badge variant={status === "submitted" ? "default" : "outline"} className={status === "submitted" ? "bg-success text-success-foreground hover:bg-success" : ""}>

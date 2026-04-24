@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Calendar, Clock, MapPin, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -58,12 +58,13 @@ export default function Timetable() {
     <div>
       <PageHeader
         title="Timetable"
-        description="Weekly class schedule."
+        description="Your weekly class schedule at a glance."
+        icon={<Calendar className="h-6 w-6" />}
         actions={
           isAdmin && (
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button className="gap-2"><Plus className="h-4 w-4" /> Add class</Button>
+                <Button className="gap-2 shadow-glow"><Plus className="h-4 w-4" /> Add class</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader><DialogTitle>Add class</DialogTitle></DialogHeader>
@@ -96,22 +97,35 @@ export default function Timetable() {
         {DAYS.map((day) => {
           const items = slots.filter((s) => s.day === day);
           return (
-            <Card key={day} className="border-border/60 shadow-card">
-              <CardContent className="p-4">
-                <div className="mb-3 flex items-center justify-between">
-                  <h3 className="font-semibold">{day}</h3>
-                  <span className="text-xs text-muted-foreground">{items.length} classes</span>
+            <Card key={day} className="border-border/60 shadow-card transition-shadow hover:shadow-glow">
+              <CardContent className="p-5">
+                <div className="mb-4 flex items-center justify-between border-b border-border/60 pb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-1 rounded-full bg-gradient-vivid" />
+                    <h3 className="font-display text-lg font-bold">{day}</h3>
+                  </div>
+                  <span className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-accent-foreground">
+                    {items.length} {items.length === 1 ? "class" : "classes"}
+                  </span>
                 </div>
                 <div className="space-y-2">
-                  {items.length === 0 && <p className="text-sm text-muted-foreground">No classes.</p>}
+                  {items.length === 0 && (
+                    <p className="rounded-lg border border-dashed border-border/60 py-6 text-center text-xs text-muted-foreground">
+                      No classes scheduled
+                    </p>
+                  )}
                   {items.map((s) => (
-                    <div key={s.id} className="group rounded-lg border bg-gradient-subtle p-3">
+                    <div key={s.id} className="group rounded-xl border border-border/60 bg-card p-3 transition-all hover:border-primary/40 hover:bg-accent/30 hover:shadow-sm">
                       <div className="flex items-start justify-between gap-2">
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-medium">{s.subject}</p>
-                          <p className="text-xs text-muted-foreground">{s.teacher}{s.room ? ` • ${s.room}` : ""}</p>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate font-semibold">{s.subject}</p>
+                          <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                            <span className="inline-flex items-center gap-1"><User className="h-3 w-3" />{s.teacher}</span>
+                            {s.room && <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{s.room}</span>}
+                          </div>
                         </div>
-                        <span className="shrink-0 rounded-md bg-accent px-2 py-1 text-xs font-medium text-accent-foreground">
+                        <span className="inline-flex shrink-0 items-center gap-1 rounded-md bg-gradient-vivid px-2 py-1 text-[11px] font-semibold text-primary-foreground shadow-sm">
+                          <Clock className="h-3 w-3" />
                           {s.start_time.slice(0,5)}–{s.end_time.slice(0,5)}
                         </span>
                       </div>

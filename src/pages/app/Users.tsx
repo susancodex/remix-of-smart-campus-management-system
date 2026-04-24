@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, Shield, ShieldOff, UserCircle2 } from "lucide-react";
+import { Search, Shield, ShieldOff, UserCircle2, Users as UsersIcon } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -104,33 +104,33 @@ export default function Users() {
       <PageHeader
         title="Users"
         description="Manage who has admin access to the campus."
+        icon={<UsersIcon className="h-6 w-6" />}
       />
 
       <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <Card className="border-border/60 shadow-card">
-          <CardContent className="p-4">
-            <p className="text-xs font-medium text-muted-foreground">Total users</p>
-            <p className="mt-1 text-2xl font-bold">{rows.length}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-border/60 shadow-card">
-          <CardContent className="p-4">
-            <p className="text-xs font-medium text-muted-foreground">Admins</p>
-            <p className="mt-1 text-2xl font-bold">{adminCount}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-border/60 shadow-card">
-          <CardContent className="p-4">
-            <p className="text-xs font-medium text-muted-foreground">Students</p>
-            <p className="mt-1 text-2xl font-bold">{rows.length - adminCount}</p>
-          </CardContent>
-        </Card>
+        {[
+          { label: "Total users", value: rows.length, icon: UsersIcon, color: "text-primary" },
+          { label: "Admins", value: adminCount, icon: Shield, color: "text-warning" },
+          { label: "Students", value: rows.length - adminCount, icon: UserCircle2, color: "text-success" },
+        ].map((s) => (
+          <Card key={s.label} className="border-border/60 shadow-card transition-all hover:shadow-glow">
+            <CardContent className="flex items-center justify-between p-5">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{s.label}</p>
+                <p className="mt-1 font-display text-3xl font-bold">{s.value}</p>
+              </div>
+              <div className={`flex h-10 w-10 items-center justify-center rounded-lg bg-accent ${s.color}`}>
+                <s.icon className="h-5 w-5" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       <div className="relative mb-4 max-w-md">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          className="pl-9"
+          className="h-11 pl-9"
           placeholder="Search by name, email or role..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}

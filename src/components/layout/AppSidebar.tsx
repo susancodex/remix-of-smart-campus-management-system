@@ -39,13 +39,13 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="border-b border-sidebar-border px-4 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-primary shadow-elegant">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-vivid shadow-glow">
             <GraduationCap className="h-5 w-5 text-primary-foreground" />
           </div>
           {!collapsed && (
             <div className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold tracking-tight">Smart Campus</span>
-              <span className="text-xs text-muted-foreground">Management</span>
+              <span className="font-display text-base font-bold tracking-tight">Smart Campus</span>
+              <span className="text-[11px] uppercase tracking-wider text-muted-foreground">Management</span>
             </div>
           )}
         </div>
