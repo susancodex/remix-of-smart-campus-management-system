@@ -13,6 +13,7 @@ import Notices from "./pages/app/Notices";
 import Notes from "./pages/app/Notes";
 import Assignments from "./pages/app/Assignments";
 import Attendance from "./pages/app/Attendance";
+import Users from "./pages/app/Users";
 import { AuthProvider } from "./contexts/AuthContext";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
               <Route path="notes" element={<Notes />} />
               <Route path="assignments" element={<Assignments />} />
               <Route path="attendance" element={<Attendance />} />
+              <Route path="users" element={<Users />} />
             </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

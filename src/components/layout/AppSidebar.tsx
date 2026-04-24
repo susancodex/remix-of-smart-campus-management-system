@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Calendar, Megaphone, FileText, ClipboardList, CheckSquare, GraduationCap, LogOut } from "lucide-react";
+import { LayoutDashboard, Calendar, Megaphone, FileText, ClipboardList, CheckSquare, GraduationCap, LogOut, Users as UsersIcon } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +23,10 @@ const items = [
   { title: "Notes", url: "/app/notes", icon: FileText },
   { title: "Assignments", url: "/app/assignments", icon: ClipboardList },
   { title: "Attendance", url: "/app/attendance", icon: CheckSquare },
+];
+
+const adminItems = [
+  { title: "Users", url: "/app/users", icon: UsersIcon },
 ];
 
 export function AppSidebar() {
@@ -69,6 +73,28 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        {role === "admin" && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Admin</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {adminItems.map((item) => {
+                  const active = location.pathname.startsWith(item.url);
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild isActive={active}>
+                        <NavLink to={item.url}>
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.title}</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
       <SidebarFooter className="border-t border-sidebar-border p-3">
         {!collapsed ? (
