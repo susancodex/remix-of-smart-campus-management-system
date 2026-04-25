@@ -5,10 +5,7 @@ build
 # Dependencies
 node_modules
 
-# Local env / OS files
-.env
-.env.local
-.env.*.local
+# OS files
 .DS_Store
 
 # Logs & caches
@@ -22,3 +19,7 @@ vitest.config.ts
 
 # Supabase migrations & dev config (server-managed)
 supabase
+
+# NOTE: .env is intentionally NOT ignored.
+# Lovable Cloud manages it with the public Supabase URL and publishable (anon) key,
+# both of which are required at Vite build time and safe to commit (RLS-protected).
