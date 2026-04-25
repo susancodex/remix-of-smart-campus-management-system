@@ -197,9 +197,16 @@ const Index = () => {
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-vivid">
               <GraduationCap className="h-3.5 w-3.5 text-primary-foreground" />
             </div>
-            <span>© {new Date().getFullYear()} Smart Campus. Created by Susan Acharya.</span>
+            <span>
+              © {new Date().getFullYear()} Smart Campus. Created by{" "}
+              <Link to="/credits" className="font-medium text-foreground hover:text-primary transition-colors">
+                Susan Acharya
+              </Link>
+              .
+            </span>
           </div>
           <div className="flex gap-5">
+            <Link to="/credits" className="hover:text-foreground transition-colors">Credits</Link>
             <Link to="/auth" className="hover:text-foreground transition-colors">Sign in</Link>
             <Link to="/auth?mode=signup" className="hover:text-foreground transition-colors">Get started</Link>
           </div>
