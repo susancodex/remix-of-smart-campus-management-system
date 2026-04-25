@@ -17,8 +17,9 @@ coverage
 src/test
 vitest.config.ts
 
-# Supabase migrations & dev config (server-managed)
-supabase
+# Lovable Cloud migrations & dev config (server-managed)
+# Keep this rooted so src/integrations/supabase/client.ts is still uploaded to Vercel.
+/supabase/
 
 # NOTE: .env is intentionally NOT ignored.
 # Lovable Cloud manages it with the public Supabase URL and publishable (anon) key,
